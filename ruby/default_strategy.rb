@@ -2,25 +2,31 @@ class DefaultStrategy
   attr_reader :item
   protected :item
 
-  def initialize(item)
+  QUALITY_MINIMUM = 0
+  QUALITY_MAXIMUM = 50
+
+  def initialize(item, increment = -1)
     @item = item
+    @increment = increment
   end
 
   def apply
-    update_sell_in
-    update_quality
+    item.quality = quality
+    item.sell_in = sell_in
   end
 
-  def update_quality
-    quality = item.quality + quality_inc
-    item.quality = (quality < 0 ? 0 : quality)
+  def quality
+    quality = item.quality + increment
+    return QUALITY_MINIMUM if quality < QUALITY_MINIMUM
+    return QUALITY_MAXIMUM if quality > QUALITY_MAXIMUM
+    quality
   end
 
-  def quality_inc
-    item.sell_in < 0 ? -2 : -1
+  def increment
+    sell_in < 0 ? @increment * 2 : @increment
   end
 
-  def update_sell_in
-    item.sell_in -= 1
+  def sell_in
+    item.sell_in - 1
   end
 end

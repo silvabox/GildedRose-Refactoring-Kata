@@ -1,4 +1,5 @@
 require_relative 'default_strategy'
+require_relative 'mature_strategy'
 
 class GildedRose
 
@@ -8,7 +9,6 @@ class GildedRose
 
   def update_quality()
     legacy_items = [
-      'Aged Brie',
       'Sulfuras, Hand of Ragnaros',
       'Backstage passes to a TAFKAL80ETC concert'
     ]
@@ -16,7 +16,12 @@ class GildedRose
       if legacy_items.include?(item.name)
         update_quality_legacy(item)
       else
-        DefaultStrategy.new(item).apply
+        case item.name
+        when 'Aged Brie'
+          MatureStrategy.new(item).apply
+        else
+          DefaultStrategy.new(item).apply
+        end
       end
     end
   end
